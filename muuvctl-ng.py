@@ -57,20 +57,31 @@ def set_pos(ctx, pos):
         if cpos:
             break
 
+
     diff = cpos - pos
-    if (diff > 5) or (diff < -5) :
-        if cpos > pos:
-            goto = pos+2
-        else:
-            goto = pos-2
-    else:
+    if diff==0:
+        sys.exit(0)
+    if ctx.obj['debug']:
+        print(f"diff: {diff}")
+    if (diff >= 1) or (diff <= -1) :
+        if ctx.obj['debug']:
+            print("corr: 0")
+        goto = pos
+    if (diff > 1) or (diff < -1) :
+        if ctx.obj['debug']:
+            print("corr: 1")
         if cpos > pos:
             goto = pos+1
         else:
             goto = pos-1
+    if (diff > 4) or (diff < -4) :
+        if ctx.obj['debug']:
+            print("corr: 2")
+        if cpos > pos:
+            goto = pos+2
+        else:
+            goto = pos-2
 
-    if (diff >= 1) or (diff <= -1) :
-        goto = pos
 
     print(goto)
 
