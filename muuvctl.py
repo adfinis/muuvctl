@@ -3,22 +3,7 @@
 
 import serial
 import time
-
 import sys
-
-
-# proto pos move
-#
-# b'f'  > 102
-# b'\x00' > 0 (no move) 1 (up) 2(down)
-# b'\x00' > 0
-# b'\xd8' > 216
-# b'\xd8' > 216
-#
-# proto pos get
-#
-
-
 
 
 
