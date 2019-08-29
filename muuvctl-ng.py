@@ -17,6 +17,8 @@ def get_serial(port):
     except:
         print(f"ERROR: cannot open serial port {port}")
         sys.exit(1)
+    # delay for relay to kick in
+    time.sleep(0.08)
     return s
 
 
@@ -37,14 +39,17 @@ def cli(ctx, debug, port):
 
 
 @cli.command(name='get')
+@click.option('--follow', default=False, is_flag=True)
 @click.pass_context
-def get_pos(ctx):
+def get_pos(ctx, follow):
     s = get_serial(ctx.obj['port'])
+    s.rts = 0
     while True:
         pos = search_pos(s.read(1))
         if pos:
             print(pos)
-            sys.exit(0)
+            if not follow:
+                sys.exit(0)
 
 
 @cli.command(name='goto')
@@ -58,6 +63,7 @@ def set_pos(ctx, pos):
             break
 
 
+    time.sleep(0.1)
     diff = cpos - pos
     if diff==0:
         sys.exit(0)
@@ -82,12 +88,14 @@ def set_pos(ctx, pos):
         else:
             goto = pos-2
 
-
-    print(goto)
+    if ctx.obj['debug']:
+        print(f"current pos: {cpos} goto: {goto}")
 
     do_stop = False
+    msg=MUUV_STOP
     while True:
         cpos = search_pos(s.read(1))
+
         if cpos:
             if cpos > goto:
                 msg = MUUV_DOWN
@@ -99,6 +107,8 @@ def set_pos(ctx, pos):
             if ctx.obj['debug']:
                 print(f"{cpos}")
 
+        if ctx.obj['debug']:
+            print(msg)
         s.write(msg)
         time.sleep(0.01)
         if do_stop:
