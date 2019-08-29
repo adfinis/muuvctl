@@ -21,7 +21,7 @@ def get_serial(port):
         print(f"ERROR: cannot open serial port {port}")
         sys.exit(1)
     # delay for relay to kick in
-    time.sleep(0.08)
+    time.sleep(0.15)
     return s
 
 
