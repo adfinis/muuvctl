@@ -1,0 +1,2 @@
+Click==7.0
+pyserial==3.4
