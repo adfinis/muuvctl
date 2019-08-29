@@ -72,3 +72,15 @@ b'\xd8' > 216
 b'\xd8' > 216
 ```
 There is no known command yet to move the table to an specific position. You need to send up or down until the table reaches the desired position, then send stop.
+
+## Contributing
+
+Please let us know what you would like to contribute before you get invested! This is really a proof of concept at this stage.
+
+### pre-commit hook
+
+```bash
+pip install pre-commit
+pip install -r requirements-dev.txt -U
+pre-commit install
+```
