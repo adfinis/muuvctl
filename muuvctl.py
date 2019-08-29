@@ -3,6 +3,7 @@
 
 import sys
 import time
+import math
 
 import click
 
@@ -20,7 +21,7 @@ def get_serial(port):
         print(f"ERROR: cannot open serial port {port}")
         sys.exit(1)
     # delay for relay to kick in
-    time.sleep(0.08)
+    time.sleep(0.15)
     return s
 
 
@@ -66,28 +67,35 @@ def set_pos(ctx, pos):
 
     time.sleep(0.1)
     diff = cpos - pos
-    if diff == 0:
-        sys.exit(0)
+
     if ctx.obj["debug"]:
         print(f"diff: {diff}")
-    if (diff >= 1) or (diff <= -1):
-        if ctx.obj["debug"]:
-            print("corr: 0")
-        goto = pos
-    if (diff > 1) or (diff < -1):
-        if ctx.obj["debug"]:
-            print("corr: 1")
-        if cpos > pos:
-            goto = pos + 1
-        else:
-            goto = pos - 1
-    if (diff > 4) or (diff < -4):
+
+    # We need to correct the final position to take the time it takes to stop
+    # the movement into account.
+    # TODO: export into dedicated function and implement PID loop :P
+
+    # If the difference is > 4 we need to correct the position by 2
+    if abs(diff) > 4:
         if ctx.obj["debug"]:
             print("corr: 2")
-        if cpos > pos:
-            goto = pos + 2
-        else:
-            goto = pos - 2
+        corr = 2
+    # For a difference of > 1 we need to correct the position by 1
+    elif abs(diff) > 1:
+        if ctx.obj["debug"]:
+            print("corr: 1")
+        corr = 1
+    # For a difference of 1 we don't need to correct the position
+    elif abs(diff) == 1:
+        if ctx.obj["debug"]:
+            print("corr: 0")
+        corr = 0
+    # For a difference of 0 we don't need to change the height of the table
+    elif abs(diff) == 0:
+        sys.exit(0)
+
+    # Set position to move to
+    goto = pos + math.copysign(corr, diff)
 
     if ctx.obj["debug"]:
         print(f"current pos: {cpos} goto: {goto}")
