@@ -18,6 +18,7 @@ MUUV_STOP = [102, 0, 0, 216, 216]
 def main():
     cli(obj={})
 
+
 def setup_logging(debug=False):
     """Configure logging to stdout."""
     root = logging.getLogger()
@@ -138,7 +139,6 @@ def set_pos(ctx, pos):
         time.sleep(0.01)
         if do_stop:
             sys.exit(0)
-
 
 
 if __name__ == "__main__":
