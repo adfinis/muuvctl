@@ -1,0 +1,56 @@
+# muuvctl
+
+Control muuv tables with an command line tool
+
+## Wiring
+
+### Basics
+
+* Open the frontend controller
+* Solder a 3-Pin cable to `RX`,`TX` and `GND`
+* Connect `RX`,`TX` and `GND` to an USB-> Uart controller
+
+![](./doc/board.png)
+
+### Using while USB plugged in
+
+The basic wiring has the disadvantage that only the UART-Controller can control the table and the muuv-device is disfunctional. It can be fixed with an relay connected to `RTS` line of the UART which breaks the `RX` line. It is important that the relay is high trigger.
+
+![](./doc/relay-circuit.png)
+
+## Installing
+
+* Checkout the repo
+* Install Python 3.6
+* Install `python-serial` and `python-click`
+* Add the following to your `.bashrc`
+
+```
+alias muuvctl="/path/to/muuvctl/muuvctl.py"
+complete -W "--debug --port get goto --follow" muuvctl
+```
+
+
+## Serial protocol
+
+The protocol is not fully known.
+
+The table sends the following for its position:
+```
+b'\x98'
+b'\x98'
+b'\x03' <- can be b'\x00' as well
+b'\x03' <- can be b'\x00' as well
+b'O' <- position ord(pos)
+b'O' <- position ord(pos)
+```
+
+To move the table send the following:
+```
+b'f'  > 102
+b'\x00' > 0 (no move) 1 (up) 2(down)
+b'\x00' > 0 (no move) 1 (up) 2(down)
+b'\xd8' > 216
+b'\xd8' > 216
+```
+There is no known command yet to move the table to an specific position. You need to send up or down until the table reaches the desired position, then send stop.
