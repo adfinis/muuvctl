@@ -1,24 +1,45 @@
 #!/usr/bin/env python3
 
-
+import logging
+import math
 import sys
 import time
-import math
 
 import click
 
 import serial
+
+logger = logging.getLogger(__name__)
 
 MUUV_UP = [102, 2, 2, 216, 216]
 MUUV_DOWN = [102, 1, 1, 216, 216]
 MUUV_STOP = [102, 0, 0, 216, 216]
 
 
+def setup_logging(debug=False):
+    """Configure logging to stdout."""
+    root = logging.getLogger()
+    root.setLevel(logging.DEBUG)
+
+    stdout_handler = logging.StreamHandler(sys.stdout)
+
+    stdout_formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
+
+    stdout_handler.setLevel(logging.INFO)
+    if debug:
+        stdout_handler.setLevel(logging.DEBUG)
+    stdout_handler.setFormatter(stdout_formatter)
+
+    root.addHandler(stdout_handler)
+
+
 def get_serial(port):
     try:
         s = serial.Serial(port=port, baudrate=9600)
     except (OSError, serial.SerialException):
-        print(f"ERROR: cannot open serial port {port}")
+        logger.exception(f"ERROR: cannot open serial port {port}")
         sys.exit(1)
     # delay for relay to kick in
     time.sleep(0.15)
@@ -36,9 +57,8 @@ def search_pos(r):
 @click.option("--debug/--no-debug", default=False)
 @click.pass_context
 def cli(ctx, debug, port):
-    ctx.obj["debug"] = debug
     ctx.obj["port"] = port
-    pass
+    setup_logging(debug)
 
 
 @cli.command(name="get")
@@ -68,8 +88,7 @@ def set_pos(ctx, pos):
     time.sleep(0.1)
     diff = cpos - pos
 
-    if ctx.obj["debug"]:
-        print(f"diff: {diff}")
+    logger.debug(f"diff: {diff}")
 
     # We need to correct the final position to take the time it takes to stop
     # the movement into account.
@@ -77,18 +96,15 @@ def set_pos(ctx, pos):
 
     # If the difference is > 4 we need to correct the position by 2
     if abs(diff) > 4:
-        if ctx.obj["debug"]:
-            print("corr: 2")
+        logger.debug("corr: 2")
         corr = 2
     # For a difference of > 1 we need to correct the position by 1
     elif abs(diff) > 1:
-        if ctx.obj["debug"]:
-            print("corr: 1")
+        logger.debug("corr: 1")
         corr = 1
     # For a difference of 1 we don't need to correct the position
     elif abs(diff) == 1:
-        if ctx.obj["debug"]:
-            print("corr: 0")
+        logger.debug("corr: 0")
         corr = 0
     # For a difference of 0 we don't need to change the height of the table
     elif abs(diff) == 0:
@@ -97,8 +113,7 @@ def set_pos(ctx, pos):
     # Set position to move to
     goto = pos + math.copysign(corr, diff)
 
-    if ctx.obj["debug"]:
-        print(f"current pos: {cpos} goto: {goto}")
+    logger.debug(f"current pos: {cpos} goto: {goto}")
 
     do_stop = False
     msg = MUUV_STOP
@@ -113,11 +128,9 @@ def set_pos(ctx, pos):
             if cpos == goto:
                 msg = MUUV_STOP
                 do_stop = True
-            if ctx.obj["debug"]:
-                print(f"{cpos}")
+            logger.debug(f"{cpos}")
 
-        if ctx.obj["debug"]:
-            print(msg)
+        logger.debug(msg)
         s.write(msg)
         time.sleep(0.01)
         if do_stop:
