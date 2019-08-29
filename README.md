@@ -30,6 +30,24 @@ alias muuvctl="/path/to/muuvctl/muuvctl.py"
 complete -W "--debug --port get goto --follow" muuvctl
 ```
 
+## Usage
+
+Move the table to position 80:
+```
+muuvctl goto 80
+```
+
+Get current position of the table:
+```
+muuvctl get
+```
+
+Get live position of the table:
+```
+muuvctl get --follow
+```
+
+
 
 ## Serial protocol
 
