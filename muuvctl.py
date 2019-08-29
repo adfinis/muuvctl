@@ -6,7 +6,6 @@ import sys
 import time
 
 import click
-
 import serial
 
 logger = logging.getLogger(__name__)
@@ -39,7 +38,7 @@ def get_serial(port):
     try:
         s = serial.Serial(port=port, baudrate=9600)
     except (OSError, serial.SerialException):
-        logger.exception(f"ERROR: cannot open serial port {port}")
+        logger.exception(f"ERROR: cannot open serial port {port}", exc_info=False)
         sys.exit(1)
     # delay for relay to kick in
     time.sleep(0.15)
