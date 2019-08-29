@@ -8,11 +8,11 @@ Control muuv tables with an command line tool
 
 * Open the frontend controller
 * Solder a 3-Pin cable to `RX`,`TX` and `GND`
-* Connect `RX`,`TX` and `GND` to an USB-> Uart controller
+* Connect `RX`,`TX` and `GND` to an USB-> UART controller
 
 ![](./doc/board.png)
 
-### Using while USB plugged in
+### Using controller while USB plugged in
 
 The basic wiring has the disadvantage that only the UART-Controller can control the table and the muuv-device is disfunctional. It can be fixed with an relay connected to `RTS` line of the UART which breaks the `RX` line. It is important that the relay is high trigger.
 
@@ -20,13 +20,21 @@ The basic wiring has the disadvantage that only the UART-Controller can control 
 
 ## Installing
 
-* Checkout the repo
-* Install Python 3.6
-* Install `python-serial` and `python-click`
-* Add the following to your `.bashrc`
-
+### System wide:
 ```
-alias muuvctl="/path/to/muuvctl/muuvctl.py"
+pip install .
+```
+
+### For current user:
+```
+pip install --user .
+```
+In order to run `muuvctl` from commandline, make sure that `/home/$USER/.local/bin` is in your `$PATH`
+
+### Bash completion
+
+Add the following to your  `.bashrc`:
+```
 complete -W "--debug --port get goto --follow" muuvctl
 ```
 
