@@ -1,6 +1,6 @@
 # muuvctl
 
-Control muuv tables with an command line tool
+Control muuv tables with a command line tool
 
 ## Wiring
 
@@ -8,13 +8,13 @@ Control muuv tables with an command line tool
 
 * Open the frontend controller
 * Solder a 3-Pin cable to `RX`,`TX` and `GND`
-* Connect `RX`,`TX` and `GND` to an USB-> UART controller
+* Connect `RX`,`TX` and `GND` to a USB-> UART controller
 
 ![](./doc/board.png)
 
 ### Using controller while USB plugged in
 
-The basic wiring has the disadvantage that only the UART-Controller can control the table and the muuv-device is disfunctional. It can be fixed with an relay connected to `RTS` line of the UART which breaks the `RX` line. It is important that the relay is high trigger.
+The basic wiring has the disadvantage that only the UART-Controller can control the table and the muuv-device is disfunctional. It can be fixed with a relay connected to `RTS` line of the UART which breaks the `RX` line. It is important that the relay is high trigger.
 
 ![](./doc/relay-circuit.png)
 
@@ -83,7 +83,7 @@ There is no known command yet to move the table to an specific position. You nee
 
 ## Contributing
 
-Please let us know what you would like to contribute before you get invested! This is really a proof of concept at this stage.
+Please let us know what you would like to contribute before you get invested! This is really just a proof of concept at this stage.
 
 ### pre-commit hook
 
