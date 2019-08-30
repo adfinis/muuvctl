@@ -46,7 +46,7 @@ def get_serial(port):
         logger.exception(f"ERROR: cannot open serial port {port}", exc_info=False)
         sys.exit(1)
     # delay for relay to kick in
-    time.sleep(0.15)
+    time.sleep(0.13)
     return s
 
 
@@ -89,7 +89,7 @@ def set_pos(ctx, pos):
         if cpos:
             break
 
-    time.sleep(0.1)
+    time.sleep(0.13)
     diff = cpos - pos
 
     logger.debug(f"diff: {diff}")
@@ -123,7 +123,7 @@ def set_pos(ctx, pos):
     msg = MUUV_STOP
     while True:
         cpos = search_pos(s.read(1))
-
+        s.write(msg)
         if cpos:
             if cpos > goto:
                 msg = MUUV_DOWN
