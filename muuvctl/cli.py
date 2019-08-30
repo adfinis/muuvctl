@@ -15,6 +15,10 @@ MUUV_DOWN = [102, 1, 1, 216, 216]
 MUUV_STOP = [102, 0, 0, 216, 216]
 
 
+def main():
+    cli(obj={})
+
+
 def setup_logging(debug=False):
     """Configure logging to stdout."""
     root = logging.getLogger()
@@ -35,6 +39,7 @@ def setup_logging(debug=False):
 
 
 def get_serial(port):
+    s = serial.Serial(port=port, baudrate=9600)
     try:
         s = serial.Serial(port=port, baudrate=9600)
     except (OSError, serial.SerialException):
@@ -137,4 +142,4 @@ def set_pos(ctx, pos):
 
 
 if __name__ == "__main__":
-    cli(obj={})
+    main()
