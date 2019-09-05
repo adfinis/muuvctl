@@ -59,27 +59,76 @@ muuvctl get --follow
 
 ## Serial protocol
 
-The protocol is not fully known.
+The protocol seemst to be called TiMOTION F-Bus.
+Baudrate is: `9600`
+The following is known (possibly not everything that the controller can do):
 
-The table sends the following for its position:
+### RX
+The controller tin the table sends the following:
+```c
+uint8_t StartByte =  0x98;
+uint8_t StartByte =  0x98;
+uint8_t Param;
+uint8_t Param;
+uint8_t Data;
+uint8_t Data;
 ```
-b'\x98'
-b'\x98'
-b'\x03' <- can be b'\x00' as well
-b'\x03' <- can be b'\x00' as well
-b'O' <- position ord(pos)
-b'O' <- position ord(pos)
+`Param` is the following:
+```c
+STOPPED      =  0x00;
+SAVE_TRIGGED =  0x01;
+MOVING       =  0x03;
+```
+`Data` is normally the position of the table.
+
+### TX
+
+You need to send the following struct to control it
+```c
+uint8_t StartByte = 0xD8;
+uint8_t StartByte = 0xD8;
+uint8_t Param;
+uint8_t Command;
+uint8_t Command;
+```
+Only known value for `Param` is `0x66` which is used in all commands.
+
+
+`Command` is the following:
+```c
+STOP  = 0x00;
+DOWN  = 0x01;
+UP    = 0x02;
+RESET = 0x03;
+POS1  = 0x04;
+POS2  = 0x08;
+POS3  = 0x10;
+POS4  = 0x20;
+SAVE  = 0x40;
 ```
 
-To move the table send the following:
-```
-b'f'  > 102
-b'\x00' > 0 (no move) 1 (up) 2(down)
-b'\x00' > 0 (no move) 1 (up) 2(down)
-b'\xd8' > 216
-b'\xd8' > 216
-```
-There is no known command yet to move the table to an specific position. You need to send up or down until the table reaches the desired position, then send stop.
+#### TX Examples
+
+* Move up: `0xD8, 0xD8, 0x66, 0x02, 0x02`
+* Move down: `0xD8, 0xD8, 0x66, 0x01, 0x01`
+* Stop: `0xD8, 0xD8, 0x66, 0x00, 0x00`
+* Goto POS1: `0xD8, 0xD8, 0x66, 0x04, 0x04`
+* Goto POS4: `0xD8, 0xD8, 0x66, 0x20, 0x20`
+* Reset: `0xD8, 0xD8, 0x66, 0x03, 0x03`   
+
+##### Save
+* Send min. 32x SAFE: `0xD8, 0xD8, 0x66, 0x40, 0x40`
+* Optional: wait until table sends: `0x98, 0x98, 0x01, 0x01, POS, POS `
+* Send 4x wanted POS, for POS1: `0xD8, 0xD8, 0x66, 0x04, 0x04`
+* Send 1x STOP: `0xD8, 0xD8, 0x66, 0x00, 0x00`
+
+
+#### Notes
+
+There seems to be no way to move the table to an specific position. You need to send up or down until the table reaches the desired position, then send stop.
+
+
+
 
 ## Contributing
 
