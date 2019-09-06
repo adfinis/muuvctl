@@ -59,7 +59,7 @@ muuvctl get --follow
 
 ## Serial protocol
 
-The protocol seemst to be called TiMOTION F-Bus.
+The protocol seems to be called TiMOTION F-Bus.
 Baudrate is: `9600`
 The following is known (possibly not everything that the controller can do):
 
@@ -125,7 +125,7 @@ SAVE  = 0x40;
 
 #### Notes
 
-There seems to be no way to move the table to an specific position. You need to send up or down until the table reaches the desired position, then send stop.
+There seems to be no way to move the table to a specific position. You need to send up or down until the table reaches the desired position, then send stop.
 
 
 
