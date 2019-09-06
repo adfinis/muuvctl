@@ -64,7 +64,7 @@ Baudrate is: `9600`
 The following is known (possibly not everything that the controller can do):
 
 ### RX
-The controller tin the table sends the following:
+The controller in the table sends the following:
 ```c
 uint8_t StartByte =  0x98;
 uint8_t StartByte =  0x98;
