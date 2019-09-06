@@ -10,9 +10,10 @@ import serial
 
 logger = logging.getLogger(__name__)
 
-MUUV_UP = [102, 2, 2, 216, 216]
-MUUV_DOWN = [102, 1, 1, 216, 216]
-MUUV_STOP = [102, 0, 0, 216, 216]
+MUUV_UP = [0xD8, 0xD8, 0x66, 0x02, 0x02]
+MUUV_DOWN = [0xD8, 0xD8, 0x66, 0x01, 0x01]
+MUUV_STOP = [0xD8, 0xD8, 0x66, 0x00, 0x00]
+
 
 
 def main():
@@ -51,13 +52,13 @@ def get_serial(port):
 
 
 def search_pos(r):
-    if r not in [b"\x00", b"\x98", b"\x03"]:
+    if r not in [b"\x00", b"\x98", b"\x03", b"\x01"]:
         return ord(r)
     return False
 
 
 @click.group()
-@click.option("--port", default="/dev/ttyUSB3")
+@click.option("--port", default="/dev/ttyUSB0")
 @click.option("--debug/--no-debug", default=False)
 @click.pass_context
 def cli(ctx, debug, port):
