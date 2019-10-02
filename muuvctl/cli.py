@@ -40,6 +40,7 @@ def setup_logging(debug=False):
 
 
 def get_serial(port):
+    """opening serial port and return object"""
     s = serial.Serial(port=port, baudrate=9600)
     try:
         s = serial.Serial(port=port, baudrate=9600)
@@ -52,6 +53,7 @@ def get_serial(port):
 
 
 def search_pos(r):
+    """this function gets a bit from table and tries to find its position"""
     if r not in [b"\x00", b"\x98", b"\x03", b"\x01"]:
         return ord(r)
     return False
