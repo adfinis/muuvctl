@@ -6,7 +6,7 @@ with open("requirements.txt") as f:
 setup(
     name="muuvctl",
     version="0.0.1",
-    description="Control muuv tables with an command line tool",
+    description="Control muuv tables with a command line tool",
     url="https://github.com/adfinis-sygroup/muuvctl",
     author="Cyrill von Wattenwyl, Lucas Bickel, Lukas Grossar",
     license="AGPL-3.0",
